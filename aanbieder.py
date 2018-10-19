@@ -4,7 +4,7 @@ import csv
 
 
 def checkPass(username, password):
-    file = "/Users/Gijs/PycharmProjects/MPProg/Aanbieder/aanbieders.csv"
+    file = "Aanbieder/aanbieders.csv"
 
     with open(file, "r") as dataCSV:
         reader = csv.reader(dataCSV, delimiter=";")
