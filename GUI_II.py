@@ -12,6 +12,7 @@ labelFont = "Arial 12 bold"
 knopRelief = RAISED
 knopKleur = "#5e5e5e"
 knopTekst = "#e2e2e2"
+knopKleurClean = "black"
 knopFont = "Arial 12 bold"
 knopWidth = 15
 
@@ -19,6 +20,7 @@ def hoofdMenu():
     infoFrame.pack_forget()
     aanbiederLoginFrame.pack_forget()
     aanbiederFrame.pack_forget()
+    newUserFrame.pack_forget()
 
     hoofdFrame.pack(fill="both", expand=True)
 
@@ -38,6 +40,10 @@ def hoofdMenu():
     infoKnop = Button(master=hoofdFrame, command=infoScherm, text="?",
                            bg=knopKleur, fg=knopTekst, font=knopFont, relief=knopRelief)
     infoKnop.grid(row=3, column=2, ipadx=4, sticky=E)
+    # Knop om het programma af te sluiten
+    quitKnop = Button(master=hoofdFrame, command=root.destroy, text="Afsluiten",
+                      bg=knopKleur, fg=knopTekst, font=knopFont, relief=knopRelief)
+    quitKnop.grid(row=3, column=0, sticky=W)
 
     # Welkom label
     welkomLabel = Label(master=hoofdFrame, text="Welkom bij skeere netflix",
@@ -72,6 +78,7 @@ def ticketMenu():
 
 
 def aanbiederLogin():
+    # De invoervelden staan aan onderkant van het programma zodat ze toeganlijk zijn
     hoofdFrame.pack_forget()
     aanbiederLoginFrame.pack(fill="both", expand=True)
 
@@ -86,16 +93,16 @@ def aanbiederLogin():
                        bg=knopKleur, fg=knopTekst, font=Font, relief=RAISED, width=22)
     loginKnop.grid(row=3, column=2, padx=2, sticky=N)
 
-    newUserKnop = Button(master=aanbiederLoginFrame, command=newUser, text="Nieuwe gebruiker",
+    newUserKnop = Button(master=aanbiederLoginFrame, command=newUserMenu, text="Nieuwe gebruiker",
                          bg=knopKleur, fg=knopTekst, font=knopFont, relief=knopRelief, width=20)
     newUserKnop.grid(row=0, column=1, columnspan=3, padx=0, pady=5, sticky=W)
     # Label
     userLabel = Label(master=aanbiederLoginFrame, text="Gebruikersnaam",
-                      bg=bgKleur, fg=labelTekst, font=Font)
+                      bg=bgKleur, fg=knopKleurClean, font=Font)
     userLabel.grid(row=1, column=1, sticky=E, pady=5, padx=5)
 
     passLabel = Label(master=aanbiederLoginFrame, text="Wachtwoord",
-                      bg=bgKleur, fg=labelTekst, font=Font)
+                      bg=bgKleur, fg=knopKleurClean, font=Font)
     passLabel.grid(row=2, column=1, sticky=E, pady=5, padx=5)
 
 
@@ -124,13 +131,63 @@ def loginCheck():
         welkomLabel = Label(master=aanbiederFrame, text=welcomeMessage,
                             fg="black", bg=bgKleur, font="Arial 12")
         welkomLabel.grid(row=0, column=1, pady=5)
+
+        userEntry.delete(0, END)
+        passEntry.delete(0, END)
     else:
         errorMessage = "Gebruikersnaam/wachtwoord is incorrect"
-        showinfo(title="Error 404", message=errorMessage)
+        showinfo(title="Error 400", message=errorMessage)
+
+        passEntry.delete(0, END)
 
 
-def newUser():
-    pass
+def newUserMenu():
+    # De invoervelden staan aan onderkant van het programma zodat ze toeganlijk zijn
+    aanbiederLoginFrame.pack_forget()
+    newUserFrame.pack(fill="both", expand=True)
+
+    # Knoppen
+    terugKnop = Button(master=newUserFrame, command=hoofdMenu, text="Uitloggen",
+                       bg=knopKleur, fg=knopTekst, font=knopFont, relief=knopRelief)
+    terugKnop.grid(row=0, column=0, padx=5, pady=5, sticky=W)
+
+    createKnop = Button(master=newUserFrame, command=createUser, text="Nieuwe gebruiker aanmaken",
+                        bg=knopKleur, fg=knopTekst, font=knopFont, relief=knopRelief)
+    createKnop.grid(row=4, column=1, columnspan=2, sticky=E)
+    # Labels
+    usernameLabel = Label(master=newUserFrame, text="Gebruikersnaam",
+                          bg=bgKleur, fg=knopKleurClean, font=knopFont)
+    usernameLabel.grid(row=1, column=1, padx=2, sticky=E)
+    passwordLabel = Label(master=newUserFrame, text="Wachtwoord",
+                          bg=bgKleur, fg=knopKleurClean, font=knopFont)
+    passwordLabel.grid(row=2, column=1, padx=2, sticky=E)
+    seatcountLabel = Label(master=newUserFrame, text="Uw aantal zitplaatsen",
+                          bg=bgKleur, fg=knopKleurClean, font=knopFont)
+    seatcountLabel.grid(row=3, column=1, padx=2, sticky=E)
+
+
+def createUser():
+    username = newuserEntry.get()
+    password = newpassEntry.get()
+    seatcount = seatcountEntry.get()
+
+    makeUser = newUser(username, password, seatcount)
+
+    completeMessage = "Nieuwe gebruiker {} toegevoegd".format(username)
+    errorMessage = "Gebruikersnaam is al in gebruik"
+
+    if makeUser:
+        showinfo(title="Succes!", message=completeMessage)
+        newuserEntry.delete(0, END)
+        newpassEntry.delete(0, END)
+        seatcountEntry.delete(0, END)
+
+    else:
+        showinfo(title="Foutmelding", message=errorMessage)
+        newpassEntry.delete(0, END)
+        seatcountEntry.delete(0, END)
+
+
 
 
 root = Tk()
@@ -141,12 +198,21 @@ hoofdFrame = Frame(master=root, bg=bgKleur)
 infoFrame = Frame(master=root, bg=bgKleur)
 aanbiederLoginFrame = Frame(master=root, bg=bgKleur)
 aanbiederFrame = Frame(master=root, bg=bgKleur)
+newUserFrame = Frame(master=root, bg=bgKleur)
 
-# Entry
-userEntry =Entry(master=aanbiederLoginFrame, font=knopFont)
+# Entry velden voor aanbiederLoginFrame
+userEntry = Entry(master=aanbiederLoginFrame, font=knopFont)
 userEntry.grid(row=1, column=2)
 passEntry = Entry(master=aanbiederLoginFrame, font=knopFont, show="■")
 passEntry.grid(row=2, column=2)
+
+# Entry velden voor newUserFrame
+newuserEntry = Entry(master=newUserFrame, font=knopFont)
+newuserEntry.grid(row=1, column=2)
+newpassEntry = Entry(master=newUserFrame, font=knopFont)
+newpassEntry.grid(row=2, column=2)
+seatcountEntry = Entry(master=newUserFrame, font=knopFont)
+seatcountEntry.grid(row=3, column=2)
 
 hoofdMenu()
 root.mainloop()
