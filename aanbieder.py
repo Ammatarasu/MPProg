@@ -16,19 +16,21 @@ def checkPass(username, password):
         for row in reader:
             userData.append(row)
 
-    print(userData)
-    for i in range(1, len(userData)):
-        gebruikersnaam = userData[i][0]
-        wachtwoord = userData[i][1]
+    try:
+        for i in range(1, len(userData)):
+            gebruikersnaam = userData[i][0]
+            wachtwoord = userData[i][1]
 
-        usernameList = []
-        usernameList.append(gebruikersnaam)
+            usernameList = []
+            usernameList.append(gebruikersnaam)
 
-        if gebruikersnaam == username and wachtwoord == password:
-            print("* Correct password")
-            return True
-        else:
-            print("*** ERROR: Wrong pass ***")
+            if gebruikersnaam == username and wachtwoord == password:
+                print("* Correct password")
+                return True
+            else:
+                print("*** NO MATCH")
+    except IndexError:
+        print("*** ERROR: Wrong password ***")
 
 
 def checkAvailable(username):
@@ -63,3 +65,5 @@ def newUser(username, password, seatcount):
             return True
         else:
             print("*** New user not added ***")
+
+# Heisenberg

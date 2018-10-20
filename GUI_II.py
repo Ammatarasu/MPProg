@@ -60,11 +60,11 @@ def infoScherm():
                        bg=knopKleur, fg=knopTekst, font=knopFont, relief=knopRelief)
     terugKnop.grid(row=0, column=0, padx=5, pady=5)
     # Info
-    creatorLabel = Label(master=infoFrame, text="Gemaakt door:",
+    creatorLabel = Label(master=infoFrame, text="Gemaakt door: Project Groep 5",
                          bg=labelKleur, fg=knopTekst, font=knopFont)
     creatorLabel.grid(row=1, column=1)
 
-    versieLabel = Label(master=infoFrame, text="Versie: 0.1",
+    versieLabel = Label(master=infoFrame, text="Versie: 0.21",
                          bg=labelKleur, fg=knopTekst, font=knopFont)
     versieLabel.grid(row=2, column=1)
 
@@ -147,7 +147,7 @@ def newUserMenu():
     newUserFrame.pack(fill="both", expand=True)
 
     # Knoppen
-    terugKnop = Button(master=newUserFrame, command=hoofdMenu, text="Uitloggen",
+    terugKnop = Button(master=newUserFrame, command=hoofdMenu, text="Terug",
                        bg=knopKleur, fg=knopTekst, font=knopFont, relief=knopRelief)
     terugKnop.grid(row=0, column=0, padx=5, pady=5, sticky=W)
 
@@ -216,3 +216,5 @@ seatcountEntry.grid(row=3, column=2)
 
 hoofdMenu()
 root.mainloop()
+
+# Heisenberg
