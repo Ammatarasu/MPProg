@@ -13,30 +13,31 @@ knopRelief = RAISED
 knopKleur = "#5e5e5e"
 knopTekst = "#e2e2e2"
 knopFont = "Arial 12 bold"
-knopWidth = 14
+knopWidth = 15
 
 def hoofdMenu():
     infoFrame.pack_forget()
     aanbiederLoginFrame.pack_forget()
+    aanbiederFrame.pack_forget()
 
     hoofdFrame.pack(fill="both", expand=True)
 
     # Knop om naar het filmoverzicht menu te gaan
     filmoverzichtKnop = Button(master=hoofdFrame, command=filmOverzicht, text="Film overzicht",
                                bg=knopKleur, fg=knopTekst, font=knopFont, relief=knopRelief, width=knopWidth)
-    filmoverzichtKnop.grid(row=0, column=0)
+    filmoverzichtKnop.grid(row=0, column=0, padx=1)
     # Knop om naar het ticket menu te gaan
     ticketKnop = Button(master=hoofdFrame, command=ticketMenu, text="Ticket kopen",
                         bg=knopKleur, fg=knopTekst, font=knopFont, relief=knopRelief, width=knopWidth)
-    ticketKnop.grid(row=0, column=1)
+    ticketKnop.grid(row=0, column=1, padx=1)
     # Knop om naar het aanbieder menu te gaan
     aanbiederKnop = Button(master=hoofdFrame, command=aanbiederLogin, text="Aanbieders",
                            bg=knopKleur, fg=knopTekst, font=knopFont, relief=knopRelief, width=knopWidth)
-    aanbiederKnop.grid(row=0, column=2)
+    aanbiederKnop.grid(row=0, column=2, padx=1)
     # Knop om info van het programma te laten zien
     infoKnop = Button(master=hoofdFrame, command=infoScherm, text="?",
                            bg=knopKleur, fg=knopTekst, font=knopFont, relief=knopRelief)
-    infoKnop.grid(row=3, column=2, pady=5, padx=5, sticky=E)
+    infoKnop.grid(row=3, column=2, ipadx=4, sticky=E)
 
     # Welkom label
     welkomLabel = Label(master=hoofdFrame, text="Welkom bij skeere netflix",
@@ -74,7 +75,7 @@ def aanbiederLogin():
     hoofdFrame.pack_forget()
     aanbiederLoginFrame.pack(fill="both", expand=True)
 
-    Font = "Arial 11 bold"
+    Font = "Arial 10 bold"
 
     # Knoppen
     terugKnop = Button(master=aanbiederLoginFrame, command=hoofdMenu, text="Terug",
@@ -82,12 +83,12 @@ def aanbiederLogin():
     terugKnop.grid(row=0, column=0, padx=5, pady=5, sticky=W)
 
     loginKnop = Button(master=aanbiederLoginFrame, command=loginCheck, text="Login",
-                       bg=knopKleur, fg=knopTekst, font=Font, relief=RAISED, width=20)
+                       bg=knopKleur, fg=knopTekst, font=Font, relief=RAISED, width=22)
     loginKnop.grid(row=3, column=2, padx=2, sticky=N)
 
     newUserKnop = Button(master=aanbiederLoginFrame, command=newUser, text="Nieuwe gebruiker",
-                         bg=knopKleur, fg=knopTekst, font=Font, relief=knopRelief)
-    newUserKnop.grid(row=3, column=1, padx=2, sticky=W)
+                         bg=knopKleur, fg=knopTekst, font=knopFont, relief=knopRelief, width=20)
+    newUserKnop.grid(row=0, column=1, columnspan=3, padx=0, pady=5, sticky=W)
     # Label
     userLabel = Label(master=aanbiederLoginFrame, text="Gebruikersnaam",
                       bg=bgKleur, fg=labelTekst, font=Font)
@@ -100,9 +101,15 @@ def aanbiederLogin():
 
 def aanbiederMenu():
     aanbiederLoginFrame.pack_forget()
-    aanbiederFrame.pack()
+    aanbiederFrame.pack(fill="both", expand=True)
 
-
+    # Knoppen
+    terugKnop = Button(master=aanbiederFrame, command=hoofdMenu, text="Uitloggen",
+                       bg=knopKleur, fg=knopTekst, font=knopFont, relief=knopRelief)
+    terugKnop.grid(row=0, column=0, padx=5, pady=5, sticky=W)
+    # Labels
+    welkomLabel = Label(master=aanbiederFrame)
+    welkomLabel.grid(row=0, column=1, pady=5)
 
 
 def loginCheck():
@@ -114,7 +121,12 @@ def loginCheck():
 
     if loginCheck:
         aanbiederMenu()
-        welkomLabel["text"] = welcomeMessage
+        welkomLabel = Label(master=aanbiederFrame, text=welcomeMessage,
+                            fg="black", bg=bgKleur, font="Arial 12")
+        welkomLabel.grid(row=0, column=1, pady=5)
+    else:
+        errorMessage = "Gebruikersnaam/wachtwoord is incorrect"
+        showinfo(title="Error 404", message=errorMessage)
 
 
 def newUser():
@@ -133,7 +145,7 @@ aanbiederFrame = Frame(master=root, bg=bgKleur)
 # Entry
 userEntry =Entry(master=aanbiederLoginFrame, font=knopFont)
 userEntry.grid(row=1, column=2)
-passEntry = Entry(master=aanbiederLoginFrame, font=knopFont)
+passEntry = Entry(master=aanbiederLoginFrame, font=knopFont, show="■")
 passEntry.grid(row=2, column=2)
 
 hoofdMenu()

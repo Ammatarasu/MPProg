@@ -5,18 +5,29 @@ import csv
 
 def checkPass(username, password):
     file = "Aanbieder/aanbieders.csv"
+    userData = []
 
+    print("=====  Checking username/password  =====")
 
     with open(file, "r") as dataCSV:
         reader = csv.reader(dataCSV, delimiter=";")
 
         for row in reader:
-            if row[0] == "gebruikersnaam" and row[1] == "wachtwoord":
-                pass
-            else:
-                if row[0] == username and row[1] == password:
-                    return True
-                else:
-                    return False
+            userData.append(row)
+
+    for i in range(1, len(userData)):
+        gebruikersnaam = userData[i][0]
+        wachtwoord = userData[i][1]
+
+        if gebruikersnaam == username and wachtwoord == password:
+            print("Correct password")
+            return True
+        else:
+            print("*** ERROR: Wrong pass ***")
+            return False
+
+
+
+
 
 
