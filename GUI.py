@@ -82,6 +82,7 @@ root.title("Skeere Netflix")
 # Look
 knopKleur = "#5e5e5e"
 knopTekst = "white"
+knopRelief = FLAT
 
 labelKleur = "black"
 labelTekst = "white"
@@ -95,13 +96,13 @@ mainFrame = Frame(master=root, bg=frameAchtergrond)
 mainFrame.pack(fill="both", expand=False)
 
 # Knoppen voor de verschillende schermen
-allFilms = Button(master=mainFrame, command=toonAllFilms,bg=knopKleur, fg=knopTekst, text="Alle films")
+allFilms = Button(master=mainFrame, command=toonAllFilms, bg=knopKleur, fg=knopTekst, relief=knopRelief, width=16, text="Alle films")
 allFilms.grid(row=0, column=0, ipadx=5, sticky=N)
-ticketKopen = Button(master=mainFrame, command=toonTicket, bg=knopKleur, fg=knopTekst, text="Ticket kopen")
+ticketKopen = Button(master=mainFrame, command=toonTicket, bg=knopKleur, fg=knopTekst, relief=knopRelief, width=16, text="Ticket kopen")
 ticketKopen.grid(row=0, column=1, ipadx=5)
-biosStarten = Button(master=mainFrame, command=toonAanbiedersLoginScherm, bg=knopKleur, fg=knopTekst, text="Bioscoop starten")
+biosStarten = Button(master=mainFrame, command=toonAanbiedersLoginScherm, bg=knopKleur, relief=knopRelief,fg=knopTekst, width=16, text="Bioscoop starten")
 biosStarten.grid(row=0, column=2, ipadx=5)
-infoFrame = Button(master=mainFrame, command=toonInfo, text="?")
+infoFrame = Button(master=mainFrame, command=toonInfo, relief=knopRelief, text="?")
 infoFrame.grid(row=3, column=2, sticky=E)
 
 # Labeltje
@@ -112,23 +113,25 @@ welcomeLabel.grid(row=2, column=0, columnspan=3, pady=20)
 allFilmFrame = Frame(master=root, bg=frameAchtergrond)
 mainFrame.pack(fill="both", expand=True)
 # Knoppen
-terugButton = Button(master=allFilmFrame, text="Terug", bg=knopKleur, fg=knopTekst, command=toonMain)
+terugButton = Button(master=allFilmFrame, text="Terug", bg=knopKleur, fg=knopTekst, relief=knopRelief, command=toonMain)
 terugButton.grid(row=0, column=0, padx=5, pady=5)
+# Labels
+
 
 # === Menu waar gebruiker ticket kan kopen ===
 ticketFrame = Frame(master=root, bg=frameAchtergrond)
 ticketFrame.pack(fill="both", expand=True)
 # Knoppen
-terugButton = Button(master=ticketFrame, text="Terug", bg=knopKleur, fg=knopTekst, command=toonMain)
+terugButton = Button(master=ticketFrame, text="Terug", bg=knopKleur, fg=knopTekst, relief=knopRelief, command=toonMain)
 terugButton.grid(row=0, column=0, padx=5, pady=5)
 
 # === Menu waar aanbieder inlogt ===
 aanbiedersLoginFrame = Frame(master=root, bg=frameAchtergrond)
 aanbiedersLoginFrame.pack(fill="both", expand=True)
 # Knoppen
-terugButton = Button(master=aanbiedersLoginFrame, text="Terug", bg=knopKleur, fg=knopTekst, command=toonMain)
+terugButton = Button(master=aanbiedersLoginFrame, text="Terug", bg=knopKleur, fg=knopTekst, relief=knopRelief, command=toonMain)
 terugButton.grid(row=0, column=0, padx=5, pady=5)
-inlogKnop = Button(master=aanbiedersLoginFrame, text="Login", bg=knopKleur, fg=knopTekst, command=aanbiedersLogin)
+inlogKnop = Button(master=aanbiedersLoginFrame, text="Login", bg=knopKleur, fg=knopTekst, relief=knopRelief, command=aanbiedersLogin)
 inlogKnop.grid(row=3, column=2, sticky=W)
 # Inlog velden en labels
 usernameEntry = Entry(master=aanbiedersLoginFrame)
@@ -148,11 +151,11 @@ aanbiedersFrame.pack(fill="both", expand=True)
 welkomLabel = Label(master=aanbiedersFrame, bg=frameAchtergrond, fg=labelTekst)
 welkomLabel.grid(row=0, column=1, padx=10, pady=5)
 # Knoppen
-logoutKnop = Button(master=aanbiedersFrame, text="Uitloggen", bg=knopKleur, fg=knopTekst, command=toonAanbiedersLoginScherm)
+logoutKnop = Button(master=aanbiedersFrame, text="Uitloggen", bg=knopKleur, fg=knopTekst, relief=knopRelief, command=toonAanbiedersLoginScherm)
 logoutKnop.grid(row=0, column=0, padx=5, pady=5)
-rentFilm = Button(master=aanbiedersFrame, bg=knopKleur, fg=knopTekst, text="Film aanbieden")
+rentFilm = Button(master=aanbiedersFrame, bg=knopKleur, fg=knopTekst, relief=knopRelief, text="Film aanbieden")
 rentFilm.grid(row=1, column=1, sticky=W)
-rentedFilms = Button(master=aanbiedersFrame, bg=knopKleur, fg=knopTekst, text="Aangeboden films")
+rentedFilms = Button(master=aanbiedersFrame, bg=knopKleur, fg=knopTekst, relief=knopRelief, text="Aangeboden films")
 rentedFilms.grid(row=1, column=2, sticky=W)
 # Invoer velden
 
@@ -160,7 +163,7 @@ rentedFilms.grid(row=1, column=2, sticky=W)
 infoFrame = Frame(master=root, bg=frameAchtergrond)
 infoFrame.pack(fill="both", expand=True)
 # Knoppen
-terugButton = Button(master=infoFrame, text="Terug", bg=knopKleur, fg=knopTekst, command=toonMain)
+terugButton = Button(master=infoFrame, text="Terug", bg=knopKleur, fg=knopTekst, relief=knopRelief, command=toonMain)
 terugButton.grid(row=0, column=0, padx=5, pady=5)
 
 
