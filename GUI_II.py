@@ -1,6 +1,7 @@
 from tkinter import*
 from tkinter.messagebox import showinfo
 from aanbieder import *
+from API import *
 
 #bgKleur = "#d10e0e"
 bgKleur = "#e0e1e2"
@@ -21,6 +22,7 @@ def hoofdMenu():
     aanbiederLoginFrame.pack_forget()
     aanbiederFrame.pack_forget()
     newUserFrame.pack_forget()
+    filmoverzichtFrame.pack_forget()
 
     hoofdFrame.pack(fill="both", expand=True)
 
@@ -70,7 +72,19 @@ def infoScherm():
 
 
 def filmOverzicht():
-    pass
+    hoofdFrame.pack_forget()
+    filmoverzichtFrame.pack(fill="both", expand=True)
+
+    filmInfoLijst = get()
+    print(filmInfoLijst)
+
+    # Knoppen
+    terugKnop = Button(master=filmoverzichtFrame, command=hoofdMenu, text="Terug",
+                       bg=knopKleur, fg=knopTekst, font=knopFont, relief=knopRelief)
+    terugKnop.grid(row=0, column=0, padx=5, pady=5)
+    # Labels
+
+
 
 
 def ticketMenu():
@@ -175,19 +189,30 @@ def createUser():
 
     completeMessage = "Nieuwe gebruiker {} toegevoegd".format(username)
     errorMessage = "Gebruikersnaam is al in gebruik"
+    errorMessage2 = "ERROR: 409"
+    errorMessage3 = "Onbekende fout"
+
 
     if makeUser:
         showinfo(title="Succes!", message=completeMessage)
+
         newuserEntry.delete(0, END)
         newpassEntry.delete(0, END)
         seatcountEntry.delete(0, END)
 
-    else:
+        newUserFrame.pack_forget()
+        aanbiederLoginFrame.pack(fill="both", expand=True)
+
+    elif makeUser == 400:
         showinfo(title="Foutmelding", message=errorMessage)
         newpassEntry.delete(0, END)
         seatcountEntry.delete(0, END)
 
+    elif makeUser == 409:
+        showinfo(title="Foutmelding", message=errorMessage2)
 
+    else:
+        showinfo(title="Foutmelding", message=errorMessage3)
 
 
 root = Tk()
@@ -199,6 +224,8 @@ infoFrame = Frame(master=root, bg=bgKleur)
 aanbiederLoginFrame = Frame(master=root, bg=bgKleur)
 aanbiederFrame = Frame(master=root, bg=bgKleur)
 newUserFrame = Frame(master=root, bg=bgKleur)
+filmoverzichtFrame = Frame(master=root, bg=bgKleur)
+filminfoFrame = Frame(master=root, bg=bgKleur)
 
 # Entry velden voor aanbiederLoginFrame
 userEntry = Entry(master=aanbiederLoginFrame, font=knopFont)

@@ -2,6 +2,8 @@ import requests
 import xmltodict
 import datetime
 
+
+# Geeft lijst met alle informatie over de films terug
 def get():
     # Lijst waar alle film info in gaat
     films = []
@@ -37,9 +39,15 @@ def get():
         # Info van de API aan lijst toevoegen
         filmInfo = [titel, jaar, regisseur, genre, filmduur, samenvatting, imdb, startUnix, eindUnix, zender, filmtip]
         films.append(filmInfo)
+
     # De output is de lijst met alle film info
     return(films)
 
-get()
+
+# Zet de UNIX tijd die de API geeft om in een leesbare datum
+def unixConversion(unix):
+    # unix naar gewone tijd omzetten
+    date = datetime.datetime.fromtimestamp(unix).isoformat()
+    return date
 
 # Heisenberg

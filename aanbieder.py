@@ -38,17 +38,22 @@ def checkAvailable(username):
 
     print("=====  Checking if username is available  =====")
 
-    with open(csvFile, "r") as aanbiedersCSV:
-        reader = csv.reader(aanbiedersCSV, delimiter=";")
-        for row in reader:
-            usernames.append(row[0])
+    try:
+        with open(csvFile, "r") as aanbiedersCSV:
+            reader = csv.reader(aanbiedersCSV, delimiter=";")
+            for row in reader:
+                usernames.append(row[0])
 
-    if username in usernames:
-        print("*** ERROR: username already in use ***")
-        return "400"
-    else:
-        print("* Username not in use")
-        return True
+        if username in usernames:
+            print("*** ERROR: username already in use ***")
+            return 400
+        else:
+            print("* Username not in use")
+            return True
+
+    except IndexError:
+        print("*** ERROR: ERROR WHILE READING *** ")
+        return 409
 
 
 def newUser(username, password, seatcount):
@@ -59,11 +64,16 @@ def newUser(username, password, seatcount):
         isAvailable = checkAvailable(username)
         userData = (username, password, seatcount)
 
-        if isAvailable == True:
+        if isAvailable:
             print("* Adding user to {}".format(csvFile))
             writer.writerow(userData)
             return True
-        else:
+        elif isAvailable == 400:
             print("*** New user not added ***")
+            return 400
+        elif isAvailable == 409:
+            return 409
+        else:
+            print("*!* UNKNOWN ERROR *!*")
 
 # Heisenberg
