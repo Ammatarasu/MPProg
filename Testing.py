@@ -1,24 +1,81 @@
-titelLabel = Label(master=filmoverzichtFrame, text="Titel",
-                         bg=knopKleur, fg=knopTekst, font=knopFont,
-                       width=10, relief=SOLID, borderwidth=3)
-    titelLabel.grid(row=1, column=1)
+import requests
+import xmltodict
+import datetime
 
-    directorLabel = Label(master=filmoverzichtFrame, text="Regisseur",
-                        bg=knopKleur, fg=knopTekst, font=knopFont,
-                          width=10, relief=SOLID, borderwidth=3)
-    directorLabel.grid(row=1, column=2)
 
-    channelLabel = Label(master=filmoverzichtFrame, text="Zender",
-                        bg=knopKleur, fg=knopTekst, font=knopFont,
-                         width=10, relief=SOLID, borderwidth=3)
-    channelLabel.grid(row=1, column=3)
+# Geeft lijst met alle informatie over de films terug
+def get():
+    # Lijst waar alle film info in gaat
+    films = []
+    filmtips = []
+    filmstoday = []
+    filmstomorrow = []
 
-    startLabel = Label(master=filmoverzichtFrame, text="Begintijd",
-                        bg=knopKleur, fg=knopTekst, font=knopFont,
-                       width=10, relief=SOLID, borderwidth=3)
-    startLabel.grid(row=1, column=4)
+    today = datetime.datetime.today()
+    # Data die met de API mee gaat
+    dateToday = today.strftime("%d-%m-%Y")
+    apiKey = "vd6mdi21s4sf169lsakfipq28pms6ykx"
+    sorteer = "0" # 0 is alle films opvragen
 
-    endLabel = Label(master=filmoverzichtFrame, text="Eindtijd",
-                        bg=knopKleur, fg=knopTekst, font=knopFont,
-                     width=10, relief=SOLID, borderwidth=3)
-    endLabel.grid(row=1, column=5)
+    # De API output verwerken
+    apiUrl = "http://api.filmtotaal.nl/filmsoptv.xml?apikey={}&dag={}&sorteer={}".format(apiKey, "23-10-2018", sorteer)
+    response = requests.get(apiUrl)
+    filmXML = xmltodict.parse(response.text)
+    allFilms = filmXML["filmsoptv"]["film"]
+
+    for i in range(0, len(allFilms)):
+        current = allFilms[i]
+
+        # Alle informatie die nodig is
+        titel        = current["titel"]
+        jaar         = current["jaar"]
+        regisseur    = current['regisseur']
+        genre        = current["genre"]
+        filmduur     = current["duur"]
+        samenvatting = current["synopsis"]
+        imdb         = current["imdb_rating"]
+        startUnix    = current["starttijd"]
+        eindUnix     = current["eindtijd"]
+        zender       = current["zender"]
+        filmtip      = current["filmtip"]
+
+        # Info van de API aan lijst toevoegen
+        filmInfo = [titel, jaar, regisseur, genre, filmduur, samenvatting, imdb, startUnix, eindUnix, zender, filmtip]
+        films.append(filmInfo)
+
+    for i in range(0, len(films)):
+        current = films[i]
+
+        today = datetime.datetime.today()
+        dateToday = today.strftime("%Y-%m-%d")
+
+        unixConverted = unixConversion(int(current[7]))
+        movieDateXX = unixConverted[0:10]
+        movieDateX = unixConverted[0:9]
+
+        imbdRating = float(current[6])
+
+        if imbdRating > 7:
+            filmtips.append(current)
+            print(current[6])
+            print("Aandrader volgens imdb")
+        elif dateToday == movieDateX or dateToday == movieDateXX:
+            current.append(filmstoday)
+            print("today")
+        else:
+            current.append(filmstomorrow)
+            print("tomorrow")
+
+
+
+    # De output is de lijst met alle film info
+    return(films)
+
+
+# Zet de UNIX tijd die de API geeft om in een leesbare datum
+def unixConversion(unix):
+    # unix naar gewone tijd omzetten
+    date = datetime.datetime.fromtimestamp(unix).isoformat()
+    return date
+
+# Heisenberg

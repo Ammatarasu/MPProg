@@ -44,12 +44,12 @@ def checkAvailable(username):
             for row in reader:
                 usernames.append(row[0])
 
-        if username in usernames:
-            print("*** ERROR: username already in use ***")
-            return 400
-        else:
+        if username not in usernames:
             print("* Username not in use")
             return True
+        else:
+            print("*** ERROR: username already in use ***")
+            return False
 
     except IndexError:
         print("*** ERROR: ERROR WHILE READING *** ")
@@ -67,8 +67,9 @@ def newUser(username, password, seatcount):
         if isAvailable:
             print("* Adding user to {}".format(csvFile))
             writer.writerow(userData)
+            print("* New user added")
             return True
-        elif isAvailable == 400:
+        elif not isAvailable:
             print("*** New user not added ***")
             return 400
         elif isAvailable == 409:
