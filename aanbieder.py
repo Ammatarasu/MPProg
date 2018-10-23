@@ -41,6 +41,7 @@ def checkAvailable(username):
     try:
         with open(csvFile, "r") as aanbiedersCSV:
             reader = csv.reader(aanbiedersCSV, delimiter=";")
+
             for row in reader:
                 usernames.append(row[0])
 

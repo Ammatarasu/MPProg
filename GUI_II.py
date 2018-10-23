@@ -3,11 +3,11 @@ from tkinter.messagebox import showinfo
 from aanbieder import *
 from API import *
 
-#bgKleur = "#d10e0e"
+# bgKleur = "#d10e0e"
 bgKleur = "#e0e1e2"
 
-labelTekst = "#3d3d3d"
-labelKleur = "#7c0000"
+labelTekst = "#eff7ff"
+labelKleur = "#007fff"
 labelFont = "Arial 12 bold"
 
 knopRelief = RAISED
@@ -17,7 +17,13 @@ knopKleurClean = "black"
 knopFont = "Arial 12 bold"
 knopWidth = 15
 
+infoFont = "Arial 9 bold"
+
+filmtips = get(0)
+filmstoday = get(1)
+filmstomorrow = get(2)
 highlightVandaag = get(3)
+
 
 def hoofdMenu():
     infoFrame.pack_forget()
@@ -26,6 +32,10 @@ def hoofdMenu():
     newUserFrame.pack_forget()
     filmoverzichtFrame.pack_forget()
     highlightedFrame.pack_forget()
+    filmstodayFrame.pack_forget()
+    filmstomorrowFrame.pack_forget()
+    movieInfoFrame.pack_forget()
+    filmtipFrame.pack_forget()
 
     hoofdFrame.pack(fill="both", expand=True)
 
@@ -76,10 +86,16 @@ def infoScherm():
 
 def filmOverzicht():
     hoofdFrame.pack_forget()
+    highlightedFrame.pack_forget()
+    filmstodayFrame.pack_forget()
+    filmstomorrowFrame.pack_forget()
+    movieInfoFrame.pack_forget()
+    filmtipFrame.pack_forget()
+
     filmoverzichtFrame.pack(fill="both", expand=True)
 
     filmvandedagTitel = highlightVandaag[0]
-    highlightKnop["text"] = "De film van de dag is {}".format(filmvandedagTitel)
+    highlight = "De film van de dag is {}".format(filmvandedagTitel)
 
     overzichtWidth = 17
 
@@ -87,6 +103,10 @@ def filmOverzicht():
     terugKnop = Button(master=filmoverzichtFrame, command=hoofdMenu, text="Terug",
                        bg=knopKleur, fg=knopTekst, font=knopFont, relief=knopRelief)
     terugKnop.grid(row=0, column=0, padx=5, pady=5)
+
+    highlightKnop = Button(master=filmoverzichtFrame, command=highlightedInfo, text=highlight,
+                           bg="#007fff", fg="#eff7ff", font=knopFont)
+    highlightKnop.grid(row=1, column=1, columnspan=3, ipadx=5, pady=5)
 
     filmtipKnop = Button(master=filmoverzichtFrame, command=filmtip, text="Film tips",
                       bg=knopKleur, fg=knopTekst, font=knopFont, width=overzichtWidth, relief=knopRelief)
@@ -100,50 +120,298 @@ def filmOverzicht():
                        bg=knopKleur, fg=knopTekst, font=knopFont, width=overzichtWidth, relief=knopRelief)
     filmtomorrowKnop.grid(row=2, column=3, padx=5, pady=5)
 
-    # Labels
-
 
 def highlightedInfo():
     filmoverzichtFrame.pack_forget()
+    highlightedFrame.pack(fill="both", expand=True)
 
-    tite = highlightVandaag[0]
-    regisseur = highlightVandaag[2]
-    jaar = highlightVandaag[1]
-    genre = highlightVandaag[3]
-    samenvatting = highlightVandaag[5]
+    knopTekst = "black"
+
+    titel = highlightVandaag[0]
+    regisseur = "Regisseur: {}".format(highlightVandaag[2])
+    jaar = "Jaar: {}".format(highlightVandaag[1])
+    genre = "Genre(s): {}".format(highlightVandaag[3])
+    #samenvatting = highlightVandaag[5]
     filmtipInt = highlightVandaag[10]
 
     if filmtipInt == "1":
-        filmtip = "Deze film is een tip"
+        filmtip = "Deze film is een aanrader volgens imdb"
+        tekstKleur = "#004f02"
     elif filmtipInt == "0":
-        filmtip = "Deze film is geen tip"
+        tekstKleur = "Red"
+        filmtip = "Deze film is geen aanrader volgens imdb"
 
-    duur = 
-    start
-    eind =
+    duur = "Duur: {} minuten".format(highlightVandaag[4])
 
-    titelKleur = "#3b3c3d"
-    titelTekstKleur = "840000"
-    highlightedFrame.pack(fill="both", expand=True)
+    startUnix = int(highlightVandaag[7])
+    startToUnix = unixConversion(startUnix)
+    endUnix = int(highlightVandaag[8])
+    endToUnix = unixConversion(endUnix)
+
+    startTime = "{} tot {} op {}".format(startToUnix[11:19], endToUnix[11:19], startToUnix[0:10])
+
+    titelTekstKleur = "#840000"
+
     # Knoppen
-    terugKnop = Button(master=highlightedFrame, command=hoofdMenu, text="Terug",
+    terugKnop = Button(master=highlightedFrame, command=filmOverzicht, text="Terug",
                        bg=knopKleur, fg=knopTekst, font=knopFont, relief=knopRelief)
     terugKnop.grid(row=0, column=0, padx=5, pady=5)
     # Labels met alle film informatie
-    titelLabel = Label(master=highlightedFrame, text=highlightVandaag,
-                       bg=titelKleur, fg=titelTekstKleur, font=knopFont)
-    titelLabel.grid(row=1, column=1, pady=5)
+    titelLabel = Label(master=highlightedFrame, text=titel,
+                       bg=bgKleur, fg=titelTekstKleur, font=knopFont)
+    titelLabel.grid(row=1, column=1, columnspan=2, pady=5, sticky=W)
+
+    regisseurLabel = Label(master=highlightedFrame, text=regisseur,
+                           bg=bgKleur, fg=knopTekst, font=infoFont)
+    regisseurLabel.grid(row=2, column=1, sticky=W)
+
+    genreLabel = Label(master=highlightedFrame, text=genre,
+                       bg=bgKleur, fg=knopTekst, font=infoFont)
+    genreLabel.grid(row=3, column=1, sticky=W)
+
+    #samenvattingLabel =Label(master=highlightedFrame, text=samenvatting,
+    #                         bg=labelKleur, fg=labelTekst, font=infoFont, relief=RAISED)
+    #samenvattingLabel.grid(row=4, column=1, columnspan=4, rowspan=3, sticky=W)
+
+    jaarLabel = Label(master=highlightedFrame, text=jaar,
+                      bg=bgKleur, fg=knopTekst, font=infoFont)
+    jaarLabel.grid(row=7, column=1, sticky=W)
+
+    duurLabel = Label(master=highlightedFrame, text=duur,
+                      bg=bgKleur, fg=knopTekst, font=infoFont)
+    duurLabel.grid(row=8, column=1, sticky=W)
+
+    timeframeLabel = Label(master=highlightedFrame, text=startTime,
+                           bg=bgKleur, fg=knopTekst, font=infoFont)
+    timeframeLabel.grid(row=9, column=1, sticky=W)
+
+    filmtipLabel = Label(master=highlightedFrame, text=filmtip,
+                         bg=bgKleur, fg=tekstKleur, font=infoFont)
+    filmtipLabel.grid(row=10, column=1, sticky=W)
+
 
 def filmtip():
-    pass
+    filmoverzichtFrame.pack_forget()
+    filmtipFrame.pack(fill="both", expand=True)
+
+    filmtitels = []
+
+    currentRow = 0
+    currentColumn = 1
+
+    for i in range(0, len(filmtips)):
+        currentTitel = filmtips[i][0]
+        filmtitels.append(currentTitel)
+
+    for i in range(0, len(filmtitels)):
+        if currentRow <= 2:
+            currentRow += 1
+        else:
+            currentColumn += 3
+            currentRow = 1
+
+        titel = filmtitels[i]
+
+        movieLabel = Label(master=filmtipFrame, text=titel,
+                           bg=knopKleur, fg=knopTekst, font=knopFont, width=40)
+        movieLabel.grid(row=currentRow, column=currentColumn, columnspan=3)
+
+    # Knoppen
+    terugKnop = Button(master=filmtipFrame, command=filmOverzicht, text="Terug",
+                       bg=knopKleur, fg=knopTekst, font=knopFont, relief=knopRelief)
+    terugKnop.grid(row=0, column=0, padx=5, pady=5)
+
+    searchKnop = Button(master=filmtipFrame, command=displayMovieInfo, text="Zoek",
+                        bg=knopKleur, fg=knopTekst, font=knopFont, relief=knopRelief)
+    searchKnop.grid(row=0, column=3, padx=5, pady=5)
+    # Labels
+    searchLabel = Label(master=filmtipFrame, text="Info over een film opzoeken:",
+                        bg=bgKleur, fg="Black", font=knopFont)
+    searchLabel.grid(row=0, column=1, pady=5, padx=5)
 
 
 def filmstodayMenu():
-    pass
+    filmoverzichtFrame.pack_forget()
+    filmstodayFrame.pack(fill="both", expand=True)
+
+    filmtitels = []
+
+    currentRow = 0
+    currentColumn = 1
+
+    for i in range(0, len(filmstoday)):
+        currentTitel = filmstoday[i][0]
+        filmtitels.append(currentTitel)
+
+    for i in range(0, len(filmtitels)):
+        if currentRow <= 2:
+            currentRow += 1
+        else:
+            currentColumn +=3
+            currentRow = 1
+
+        titel = filmtitels[i]
+
+        movieLabel = Label(master=filmstodayFrame, text=titel,
+                             bg=knopKleur, fg=knopTekst, font=knopFont, width=40)
+        movieLabel.grid(row=currentRow, column=currentColumn, columnspan=3)
+
+    # Knoppen
+    terugKnop = Button(master=filmstodayFrame, command=filmOverzicht, text="Terug",
+                       bg=knopKleur, fg=knopTekst, font=knopFont, relief=knopRelief)
+    terugKnop.grid(row=0, column=0, padx=5, pady=5)
+
+    searchKnop = Button(master=filmstodayFrame, command=displayMovieInfo, text="Zoek",
+                        bg=knopKleur, fg=knopTekst, font=knopFont, relief=knopRelief)
+    searchKnop.grid(row=0, column=3, padx=5, pady=5)
+    # Labels
+    searchLabel = Label(master=filmstodayFrame, text="Info over een film opzoeken:",
+                        bg=bgKleur, fg="Black", font=knopFont)
+    searchLabel.grid(row=0, column=1, pady=5, padx=5)
 
 
 def filmstomorrowMenu():
-    pass
+    filmoverzichtFrame.pack_forget()
+    filmstomorrowFrame.pack(fill="both", expand=True)
+
+    filmtitels = []
+
+    currentRow = 0
+    currentColumn = 1
+
+    for i in range(0, len(filmstomorrow)):
+        currentTitel = filmstomorrow[i][0]
+        filmtitels.append(currentTitel)
+
+    for i in range(0, len(filmtitels)):
+        if currentRow <= 2:
+            currentRow += 1
+        else:
+            currentColumn += 3
+            currentRow = 1
+
+        titel = filmtitels[i]
+
+        movieLabel = Label(master=filmstomorrowFrame, text=titel,
+                           bg=knopKleur, fg=knopTekst, font=knopFont, width=40)
+        movieLabel.grid(row=currentRow, column=currentColumn, columnspan=3)
+
+    # Knoppen
+    terugKnop = Button(master=filmstomorrowFrame, command=filmOverzicht, text="Terug",
+                       bg=knopKleur, fg=knopTekst, font=knopFont, relief=knopRelief)
+    terugKnop.grid(row=0, column=0, padx=5, pady=5)
+
+    searchKnop = Button(master=filmstomorrowFrame, command=displayMovieInfo, text="Zoek",
+                        bg=knopKleur, fg=knopTekst, font=knopFont, relief=knopRelief)
+    searchKnop.grid(row=0, column=3, padx=5, pady=5)
+    # Labels
+    searchLabel = Label(master=filmstomorrowFrame, text="Info over een film opzoeken:",
+                        bg=bgKleur, fg="Black", font=knopFont)
+    searchLabel.grid(row=0, column=1, pady=5, padx=5)
+
+
+def displayMovieInfo():
+    hoofdFrame.pack_forget()
+    highlightedFrame.pack_forget()
+    filmstodayFrame.pack_forget()
+    filmstomorrowFrame.pack_forget()
+    filmtipFrame.pack_forget()
+
+    movieInfoFrame.pack(fill="both", expand=True)
+
+    knopTekst = "black"
+
+    titel = filmEntry.get()
+    titel1 = filmEntry1.get()
+    titel2 = filmEntry2.get()
+
+    movieInfo = []
+    try:
+        for i in range(0, len(filmstoday)):
+            currentTitel = filmstoday[i][0]
+            if currentTitel == titel or currentTitel == titel1 or currentTitel == titel2:
+                movie = filmstoday[i]
+                print("* Found movie info")
+                movieInfo.append(movie)
+                break
+
+        for i in range(0, len(filmstomorrow)):
+            currentTitel = filmstomorrow[i][0]
+            if currentTitel == titel or currentTitel == titel1 or currentTitel == titel2:
+                movie = filmstomorrow[i]
+                print("* Found movie info")
+                movieInfo.append(movie)
+                break
+
+        for i in range(0, len(filmtips)):
+            currentTitel = filmtips[i][0]
+            if currentTitel == titel or currentTitel == titel1 or currentTitel == titel2:
+                movie = filmtips[i]
+                print("* Found movie info")
+                movieInfo.append(movie)
+                break
+
+        titelDisplay = movieInfo[0][0]
+        regisseur = "Regisseur: {}".format(movieInfo[0][2])
+        jaar = "Jaar: {}".format(movieInfo[0][1])
+        genre = "Genre(s): {}".format(movieInfo[0][3])
+
+        filmtipInt = movieInfo[0][10]
+
+        if filmtipInt == "1":
+            filmtip = "Deze film is een aanrader volgens imdb"
+            tekstKleur = "#004f02"
+        elif filmtipInt == "0":
+            tekstKleur = "Red"
+            filmtip = "Deze film is geen aanrader volgens imdb"
+
+        duur = "Duur: {} minuten".format(movieInfo[0][4])
+
+        startUnix = int(movieInfo[0][7])
+        startToUnix = unixConversion(startUnix)
+        endUnix = int(movieInfo[0][8])
+        endToUnix = unixConversion(endUnix)
+
+        startTime = "{} tot {} op {}".format(startToUnix[11:19], endToUnix[11:19], startToUnix[0:10])
+
+        titelTekstKleur = "#840000"
+
+        # Knoppen
+        terugKnop = Button(master=movieInfoFrame, command=filmOverzicht, text="Terug",
+                       bg=knopKleur, fg=knopTekst, font=knopFont, relief=knopRelief)
+        terugKnop.grid(row=0, column=0, padx=5, pady=5)
+        # Labels met alle film informatie
+        titelLabel = Label(master=movieInfoFrame, text=titelDisplay,
+                       bg=bgKleur, fg=titelTekstKleur, font=knopFont)
+        titelLabel.grid(row=1, column=1, columnspan=2, pady=5, sticky=W)
+
+        regisseurLabel = Label(master=movieInfoFrame, text=regisseur,
+                           bg=bgKleur, fg=knopTekst, font=infoFont)
+        regisseurLabel.grid(row=2, column=1, sticky=W)
+
+        genreLabel = Label(master=movieInfoFrame, text=genre,
+                       bg=bgKleur, fg=knopTekst, font=infoFont)
+        genreLabel.grid(row=3, column=1, sticky=W)
+
+        jaarLabel = Label(master=movieInfoFrame, text=jaar,
+                      bg=bgKleur, fg=knopTekst, font=infoFont)
+        jaarLabel.grid(row=7, column=1, sticky=W)
+
+        duurLabel = Label(master=movieInfoFrame, text=duur,
+                      bg=bgKleur, fg=knopTekst, font=infoFont)
+        duurLabel.grid(row=8, column=1, sticky=W)
+
+        timeframeLabel = Label(master=movieInfoFrame, text=startTime,
+                           bg=bgKleur, fg=knopTekst, font=infoFont)
+        timeframeLabel.grid(row=9, column=1, sticky=W)
+
+        filmtipLabel = Label(master=movieInfoFrame, text=filmtip,
+                         bg=bgKleur, fg=tekstKleur, font=infoFont)
+        filmtipLabel.grid(row=10, column=1, sticky=W)
+
+    except IndexError:
+        showinfo(title="ERROR", message="Film niet gevonden. Check op spelling en hoofdletters")
+        filmOverzicht()
 
 
 def ticketMenu():
@@ -153,6 +421,7 @@ def ticketMenu():
 def aanbiederLogin():
     # De invoervelden staan aan onderkant van het programma zodat ze toeganlijk zijn
     hoofdFrame.pack_forget()
+    newUserFrame.pack_forget()
     aanbiederLoginFrame.pack(fill="both", expand=True)
 
     Font = "Arial 10 bold"
@@ -167,7 +436,7 @@ def aanbiederLogin():
     loginKnop.grid(row=3, column=2, padx=2, sticky=N)
 
     newUserKnop = Button(master=aanbiederLoginFrame, command=newUserMenu, text="Nieuwe gebruiker",
-                         bg=knopKleur, fg=knopTekst, font=knopFont, relief=knopRelief, width=20)
+                         bg=labelKleur, fg=labelTekst, font=knopFont, relief=knopRelief, width=20)
     newUserKnop.grid(row=0, column=1, columnspan=3, padx=0, pady=5, sticky=W)
     # Label
     userLabel = Label(master=aanbiederLoginFrame, text="Gebruikersnaam",
@@ -220,12 +489,12 @@ def newUserMenu():
     newUserFrame.pack(fill="both", expand=True)
 
     # Knoppen
-    terugKnop = Button(master=newUserFrame, command=hoofdMenu, text="Terug",
+    terugKnop = Button(master=newUserFrame, command=aanbiederLogin, text="Terug",
                        bg=knopKleur, fg=knopTekst, font=knopFont, relief=knopRelief)
     terugKnop.grid(row=0, column=0, padx=5, pady=5, sticky=W)
 
     createKnop = Button(master=newUserFrame, command=createUser, text="Nieuwe gebruiker aanmaken",
-                        bg=knopKleur, fg=knopTekst, font=knopFont, relief=knopRelief)
+                        bg=labelKleur, fg=labelTekst, font=knopFont, relief=knopRelief)
     createKnop.grid(row=4, column=1, columnspan=2, sticky=E)
     # Labels
     usernameLabel = Label(master=newUserFrame, text="Gebruikersnaam",
@@ -276,7 +545,7 @@ def createUser():
 
 root = Tk()
 root.title("Skeere Netflix")
-root.geometry("480x270")
+#root.geometry("480x270")
 
 hoofdFrame = Frame(master=root, bg=bgKleur)
 infoFrame = Frame(master=root, bg=bgKleur)
@@ -286,6 +555,10 @@ newUserFrame = Frame(master=root, bg=bgKleur)
 filmoverzichtFrame = Frame(master=root, bg=bgKleur)
 filminfoFrame = Frame(master=root, bg=bgKleur)
 highlightedFrame = Frame(master=root, bg=bgKleur)
+filmstodayFrame = Frame(master=root, bg=bgKleur)
+filmstomorrowFrame = Frame(master=root, bg=bgKleur)
+movieInfoFrame = Frame(master=root, bg=bgKleur)
+filmtipFrame = Frame(master=root, bg=bgKleur)
 
 # Entry velden voor aanbiederLoginFrame
 userEntry = Entry(master=aanbiederLoginFrame, font=knopFont)
@@ -301,10 +574,16 @@ newpassEntry.grid(row=2, column=2)
 seatcountEntry = Entry(master=newUserFrame, font=knopFont)
 seatcountEntry.grid(row=3, column=2)
 
-# Knop voor filmoverzicht
-highlightKnop = Button(master=filmoverzichtFrame, command=highlightedInfo,
-                        bg="#3b3c3d", fg="#840000", font=knopFont)
-highlightKnop.grid(row=1, column=1, columnspan=3, ipadx=5, pady=5)
+# Entry veld om film informatie op te zoeken
+filmEntry = Entry(master=filmstodayFrame, font=knopFont)
+filmEntry.grid(row=0, column=2, padx=5, pady=5)
+
+filmEntry1 = Entry(master=filmstomorrowFrame, font=knopFont)
+filmEntry1.grid(row=0, column=2, padx=5, pady=5)
+
+filmEntry2 = Entry(master=filmtipFrame, font=knopFont)
+filmEntry2.grid(row=0, column=2, padx=5, pady=5)
+
 
 hoofdMenu()
 root.mainloop()

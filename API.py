@@ -114,8 +114,8 @@ def get(mode):
         dateToday = today.strftime("%Y-%m-%d")
 
         unixConverted = unixConversion(int(current[7]))
-        movieDateXX = unixConverted[0:10]
-        movieDateX = unixConverted[0:9]
+        # Voor het geval er 9-12-2000 uitkomt of 12-12-2000 ik weet niet zeker of dit nodig is
+        movieDate = unixConverted[0:10]
 
         imbdRating = float(current[6])
 
@@ -123,7 +123,7 @@ def get(mode):
             filmtips.append(current)
             #grade = current[6]
             #print("* Recommend according to imbdb grade over 7. Actual grade: {}".format(grade))
-        elif dateToday == movieDateX or dateToday == movieDateXX:
+        elif dateToday == movieDate:
             filmsToday.append(current)
         else:
             filmsTomorrow.append(current)
